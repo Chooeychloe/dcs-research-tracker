@@ -1,17 +1,17 @@
+// src/App.jsx
 import { useEffect, useState } from "react";
-import ResearchFormModal from "./components/ResearchFormModal";
-import ResearchList from "./components/ResearchList";
+import { API_URL } from "./config/constants";
+import ResearchFormModal from "./components/research/ResearchFormModal";
+import ResearchList from "./components/research/ResearchList";
 
-function App() {
+export default function App() {
   const [researchLogs, setResearchLogs] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [selectedResearch, setSelectedResearch] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
 
-  // FETCH DATA
   const fetchResearch = () => {
-    fetch("http://localhost:5000/api/research")
+    fetch(`${API_URL}/api/research`)
       .then((res) => res.json())
       .then((data) => setResearchLogs(data))
       .catch((err) => console.error("Database sync runtime failure:", err));
@@ -21,14 +21,12 @@ function App() {
     fetchResearch();
   }, []);
 
-  // OPEN EDIT
   const handleEdit = (item) => {
     setSelectedResearch(item);
     setIsEdit(true);
     setIsModalOpen(true);
   };
 
-  // CLOSE MODAL (RESET EDIT STATE)
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setIsEdit(false);
@@ -37,15 +35,12 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 font-sans p-6 lg:p-10">
-      {/* HEADER */}
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
             DCS Research Repository
           </h1>
-          <p className="text-sm text-gray-600 mt-1">
-            Created by Dhan
-          </p>
+          <p className="text-sm text-gray-600 mt-1">Created by Dhan</p>
         </div>
 
         <button
@@ -60,7 +55,6 @@ function App() {
         </button>
       </div>
 
-      {/* TABLE */}
       <div className="max-w-7xl mx-auto">
         <ResearchList
           researchLogs={researchLogs}
@@ -69,7 +63,6 @@ function App() {
         />
       </div>
 
-      {/* MODAL (FIXED FOR EDIT SUPPORT) */}
       <ResearchFormModal
         key={selectedResearch?.id || "new"}
         isOpen={isModalOpen}
@@ -81,5 +74,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
